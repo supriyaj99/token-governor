@@ -16,6 +16,7 @@ It runs **for free with no API key** thanks to a built-in simulator, so you can
 run, test, and benchmark the whole system offline. Flip one setting to use real
 models.
 
+**🔗 Live demo:** https://token-governor.onrender.com
 ---
 
 ## Why this project (positioning)
