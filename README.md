@@ -117,7 +117,7 @@ open while you send traffic and refresh to watch it change.
 
 ---
 
-## The benchmark (your headline number)
+## The benchmark 
 
 ```powershell
 python -m benchmark.run_benchmark
@@ -152,33 +152,3 @@ forecaster, fairness layer, and the gateway end-to-end.
 
 ---
 
-## Deploying it (to make it count on a resume)
-
-A localhost demo reads as a tutorial; a deployed URL reads as an engineer. The
-Docker setup here deploys as-is to any VM or container service (Render, Railway,
-Fly.io, AWS ECS, Azure Container Apps). Minimal path: push the image, run
-`docker compose` on a small cloud VM, point a URL at port 8000, and add the
-dashboard. Put that URL on your resume and GitHub.
-
----
-
-## How to talk about it (interview)
-
-- **Problem → system → depth.** "Companies burn their AI budget in months because
-  nothing checks whether the expensive model was even needed. I built a gateway
-  that routes, evaluates, forecasts, and governs itself — and I went deep on
-  value-weighted tightening, which off-the-shelf tools don't do."
-- **"Why not just use LiteLLM?"** "I do — it's the provider layer inside my
-  gateway. I built the parts it doesn't: the learning router, the evaluation
-  loop, and the forecast-driven controller, specifically to understand them."
-- **On the learned router vs the static rule:** "They're close in the benchmark —
-  which is honest. The learned router's advantage is that it adapts automatically
-  as models and prices change, with no thresholds to hand-maintain."
-
-**Resume bullet (fill in your deployed URL):**
-> Built & deployed *TokenGovernor*, a cost-aware LLM gateway: a Thompson-sampling
-> router selects the cheapest model clearing a measured quality bar, a forecaster
-> auto-tightens policy before budget exhaustion, and a value-weighted layer
-> throttles low-value spend first. **~47% cheaper than top-tier-only at equal
-> quality** on a 6k-request reproducible benchmark. FastAPI · Postgres/TimescaleDB
-> · Docker · Streamlit.
