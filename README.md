@@ -115,6 +115,7 @@ A live FinOps view: spend vs budget, the exhaustion forecast, routing mix,
 quality by tier, and the per-identity value-weighted fairness table. Keep it
 open while you send traffic and refresh to watch it change.
 
+![Dashboard](dashboard1.png)
 ---
 
 ## The benchmark 
@@ -129,6 +130,7 @@ prints a cost/quality table, a **cost-vs-quality trade-off curve** (so the resul
 isn't cherry-picked), and a **learning curve**. Full expected output is in
 `BENCHMARK_RESULTS.md`.
 
+![Dashboard](dashboard2.png)
 ---
 
 ## Run the tests
