@@ -1,0 +1,47 @@
+# docker-compose.yml
+# ------------------
+# docker-compose starts MULTIPLE containers together with one command.
+# Here we start two:
+#   1) db  — a TimescaleDB database (Postgres + time-series superpowers)
+#   2) app — our FastAPI gateway (built from the Dockerfile)
+#
+# Run everything with:   docker compose up --build
+# Stop it with:          Ctrl+C, then  docker compose down
+
+services:
+  db:
+    # TimescaleDB image = Postgres with the time-series extension preinstalled.
+    image: timescale/timescaledb:latest-pg16
+    environment:
+      POSTGRES_USER: tokengov
+      POSTGRES_PASSWORD: tokengov
+      POSTGRES_DB: tokengov
+    ports:
+      # Expose the database on localhost:5432 so you can inspect it with tools.
+      - "5432:5432"
+    volumes:
+      # Keep the data on disk so it survives restarts.
+      - tokengov_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      # docker waits until the database is actually ready to accept connections
+      # before starting the app, avoiding "database not ready yet" errors.
+      test: ["CMD-SHELL", "pg_isready -U tokengov"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .  # build the image from the Dockerfile in this folder
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      MOCK_MODE: "true"
+      DATABASE_URL: "postgresql+psycopg2://tokengov:tokengov@db:5432/tokengov"
+      APP_PORT: "8000"
+    ports:
+      # Reach the gateway in your browser at http://localhost:8000
+      - "8000:8000"
+
+volumes:
+  tokengov_pgdata:

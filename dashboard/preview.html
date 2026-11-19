@@ -1,0 +1,142 @@
+<!--
+preview.html — a self-contained, visual preview of the TokenGovernor dashboard.
+Everything (CSS + the small bar charts as inline SVG) is inline, so it renders
+anywhere with no internet. Numbers here are representative of a demo run; the
+live Streamlit dashboard (dashboard/streamlit_app.py) shows the same views with
+your real database data.
+-->
+<div id="tg-root">
+<style>
+  #tg-root{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:#0f172a;background:#f1f5f9;padding:24px;margin:0;}
+  #tg-root *{box-sizing:border-box;}
+  .tg-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+  .tg-title{font-size:22px;font-weight:700;letter-spacing:-.3px;}
+  .tg-title span{color:#2563eb;}
+  .tg-sub{color:#64748b;font-size:13px;margin-top:2px;}
+  .tg-pill{background:#fef3c7;color:#92400e;border:1px solid #fde68a;border-radius:999px;
+    padding:6px 14px;font-size:13px;font-weight:600;}
+  .tg-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px;}
+  .tg-card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px 18px;
+    box-shadow:0 1px 2px rgba(15,23,42,.04);}
+  .tg-card .k{color:#64748b;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;}
+  .tg-card .v{font-size:26px;font-weight:750;margin-top:6px;}
+  .tg-card .d{font-size:12px;margin-top:4px;}
+  .pos{color:#16a34a;} .neg{color:#dc2626;}
+  .tg-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;}
+  .tg-panel{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:18px;}
+  .tg-panel h3{margin:0 0 4px;font-size:15px;font-weight:700;}
+  .tg-panel .note{color:#64748b;font-size:12px;margin:0 0 14px;}
+  .bar-row{display:flex;align-items:center;gap:10px;margin:9px 0;font-size:13px;}
+  .bar-row .lbl{width:52px;color:#334155;font-weight:600;}
+  .bar-track{flex:1;background:#f1f5f9;border-radius:7px;height:18px;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:7px;}
+  .bar-row .val{width:86px;text-align:right;color:#475569;font-variant-numeric:tabular-nums;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid #eef2f6;}
+  th{color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:.04em;}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;}
+  .badge{padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700;}
+  .b-tight{background:#fee2e2;color:#b91c1c;}
+  .b-prot{background:#dcfce7;color:#15803d;}
+  .b-norm{background:#e2e8f0;color:#475569;}
+  .tg-foot{color:#94a3b8;font-size:11px;text-align:center;margin-top:6px;}
+</style>
+
+<div class="tg-head">
+  <div>
+    <div class="tg-title">Token<span>Governor</span> &mdash; AI Cost Governance</div>
+    <div class="tg-sub">Live gateway &middot; 6,000 requests &middot; budget period day 10 of 30</div>
+  </div>
+  <div class="tg-pill">&#9679; Controller: TIGHTEN</div>
+</div>
+
+<div class="tg-cards">
+  <div class="tg-card"><div class="k">Spend / Budget</div><div class="v">$9.39</div>
+    <div class="d">of $50.00 &mdash; $40.61 left</div></div>
+  <div class="tg-card"><div class="k">Avg quality</div><div class="v">90.9%</div>
+    <div class="d pos">bar 70% &middot; passing</div></div>
+  <div class="tg-card"><div class="k">Saved vs top-tier</div><div class="v pos">47.2%</div>
+    <div class="d">$17.77 &rarr; $9.39</div></div>
+  <div class="tg-card"><div class="k">Requests</div><div class="v">6,000</div>
+    <div class="d">avg 142 ms</div></div>
+</div>
+
+<div class="tg-grid">
+  <div class="tg-panel">
+    <h3>Routing &mdash; tier chosen (Module 4)</h3>
+    <p class="note">The learning router sends easy work to cheap models, hard work to capable ones.</p>
+    <div class="bar-row"><span class="lbl">nano</span>
+      <div class="bar-track"><div class="bar-fill" style="width:61%;background:#22c55e;"></div></div>
+      <span class="val">3,655 &middot; 61%</span></div>
+    <div class="bar-row"><span class="lbl">mid</span>
+      <div class="bar-track"><div class="bar-fill" style="width:26%;background:#3b82f6;"></div></div>
+      <span class="val">1,560 &middot; 26%</span></div>
+    <div class="bar-row"><span class="lbl">full</span>
+      <div class="bar-track"><div class="bar-fill" style="width:13%;background:#6366f1;"></div></div>
+      <span class="val">785 &middot; 13%</span></div>
+  </div>
+
+  <div class="tg-panel">
+    <h3>Avg quality by tier (Module 3)</h3>
+    <p class="note">Each tier's measured quality &mdash; how the router knows "good enough".</p>
+    <div class="bar-row"><span class="lbl">nano</span>
+      <div class="bar-track"><div class="bar-fill" style="width:86%;background:#94a3b8;"></div></div>
+      <span class="val">0.86</span></div>
+    <div class="bar-row"><span class="lbl">mid</span>
+      <div class="bar-track"><div class="bar-fill" style="width:91%;background:#94a3b8;"></div></div>
+      <span class="val">0.91</span></div>
+    <div class="bar-row"><span class="lbl">full</span>
+      <div class="bar-track"><div class="bar-fill" style="width:96%;background:#94a3b8;"></div></div>
+      <span class="val">0.96</span></div>
+  </div>
+</div>
+
+<div class="tg-grid">
+  <div class="tg-panel">
+    <h3>Budget forecast (Module 5)</h3>
+    <p class="note">Linear burn-rate projection vs the budget period.</p>
+    <svg viewBox="0 0 320 120" width="100%" height="120">
+      <line x1="30" y1="95" x2="310" y2="95" stroke="#cbd5e1"/>
+      <line x1="30" y1="10" x2="30" y2="95" stroke="#cbd5e1"/>
+      <line x1="30" y1="20" x2="310" y2="20" stroke="#16a34a" stroke-dasharray="4 3"/>
+      <text x="300" y="16" font-size="8" fill="#16a34a" text-anchor="end">budget $50</text>
+      <polyline points="30,93 58,88 86,80 114,74 142,66 170,60 198,54 226,48 254,42 282,36"
+        fill="none" stroke="#2563eb" stroke-width="2"/>
+      <polyline points="282,36 310,20" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="3 3"/>
+      <circle cx="310" cy="20" r="3" fill="#dc2626"/>
+      <text x="150" y="112" font-size="9" fill="#64748b">projected exhaustion: day 28 &#8594; controller tightened routing</text>
+    </svg>
+  </div>
+
+  <div class="tg-panel">
+    <h3>Cost &#8644; quality trade-off (the knob)</h3>
+    <p class="note">One setting slides between more savings and more quality.</p>
+    <svg viewBox="0 0 320 120" width="100%" height="120">
+      <line x1="30" y1="95" x2="310" y2="95" stroke="#cbd5e1"/>
+      <line x1="30" y1="10" x2="30" y2="95" stroke="#cbd5e1"/>
+      <polyline points="40,80 110,45 180,40 240,33 300,22" fill="none" stroke="#7c3aed" stroke-width="2"/>
+      <circle cx="40" cy="80" r="3" fill="#7c3aed"/><text x="46" y="80" font-size="8" fill="#475569">62% cheaper, 76% q</text>
+      <circle cx="180" cy="40" r="4" fill="#2563eb"/><text x="120" y="34" font-size="8" fill="#2563eb">chosen: 47% / 91%</text>
+      <circle cx="300" cy="22" r="3" fill="#7c3aed"/><text x="300" y="34" font-size="8" fill="#475569" text-anchor="end">36% / 94%</text>
+    </svg>
+  </div>
+</div>
+
+<div class="tg-panel">
+  <h3>Per-identity spend &amp; value &mdash; value-weighted fairness (Module 6) &#9733; the differentiator</h3>
+  <p class="note">Over-budget teams are tightened LOW-value-per-dollar first; high-value teams are protected.</p>
+  <table>
+    <tr><th>Identity</th><th class="num">Spend</th><th class="num">Fair share</th>
+        <th class="num">Value&nbsp;/&nbsp;$</th><th class="num">Pace</th><th>Action</th></tr>
+    <tr><td>data-science</td><td class="num">$4.80</td><td class="num">$16.67</td>
+        <td class="num">34.2</td><td class="num">0.9&times;</td><td><span class="badge b-norm">normal</span></td></tr>
+    <tr><td>support-team</td><td class="num">$6.10</td><td class="num">$16.67</td>
+        <td class="num">41.8</td><td class="num">1.3&times;</td><td><span class="badge b-prot">protected &middot; high value</span></td></tr>
+    <tr><td>noisy-bot</td><td class="num">$5.90</td><td class="num">$16.67</td>
+        <td class="num">6.1</td><td class="num">1.4&times;</td><td><span class="badge b-tight">tightened &middot; low value</span></td></tr>
+  </table>
+</div>
+
+<div class="tg-foot">TokenGovernor &middot; FastAPI &middot; PostgreSQL/TimescaleDB &middot; Thompson-sampling router &middot; Docker &middot; Streamlit &mdash; preview of dashboard/streamlit_app.py</div>
+</div>

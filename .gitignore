@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Local databases created during testing
+*.db
+
+# Secrets / local settings — never commit these
+.env
+
+# Editor
+.vscode/
+.idea/

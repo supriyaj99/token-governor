@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TokenGovernor</title>
+<style>
+  :root{--bg:#f1f5f9;--card:#fff;--ink:#0f172a;--muted:#64748b;--line:#e2e8f0;--blue:#2563eb;--green:#16a34a;}
+  *{box-sizing:border-box;}
+  body{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);
+    color:var(--ink);margin:0;padding:24px;}
+  .wrap{max-width:1000px;margin:0 auto;}
+  header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+  .title{font-size:22px;font-weight:750;letter-spacing:-.3px;}
+  .title span{color:var(--blue);}
+  .sub{color:var(--muted);font-size:13px;margin-top:2px;}
+  .pill{border-radius:999px;padding:6px 14px;font-size:13px;font-weight:600;
+    background:#dcfce7;color:#15803d;border:1px solid #bbf7d0;}
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;
+    box-shadow:0 1px 2px rgba(15,23,42,.04);}
+  .card .k{color:var(--muted);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;}
+  .card .v{font-size:26px;font-weight:750;margin-top:6px;}
+  .card .d{font-size:12px;margin-top:4px;color:var(--muted);}
+  .pos{color:var(--green);}
+  .grid{display:grid;grid-template-columns:1.4fr 1fr;gap:14px;}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;}
+  .panel h3{margin:0 0 4px;font-size:15px;font-weight:700;}
+  .panel .note{color:var(--muted);font-size:12px;margin:0 0 14px;}
+  textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-size:14px;
+    font-family:inherit;resize:vertical;min-height:70px;}
+  .row{display:flex;gap:10px;align-items:center;margin-top:10px;}
+  select{border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:13px;font-family:inherit;}
+  button{background:var(--blue);color:#fff;border:0;border-radius:10px;padding:10px 18px;font-size:14px;
+    font-weight:650;cursor:pointer;}
+  button:hover{background:#1d4ed8;}
+  .result{margin-top:14px;border:1px dashed var(--line);border-radius:10px;padding:14px;background:#f8fafc;}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+  .chip{font-size:12px;border-radius:999px;padding:4px 11px;font-weight:650;}
+  .chip.tier{background:#dcfce7;color:#15803d;}
+  .chip.q{background:#dbeafe;color:#1e40af;}
+  .chip.cost{background:#fef9c3;color:#854d0e;}
+  .chip.lat{background:#e2e8f0;color:#475569;}
+  .answer{font-size:14px;color:#1f2937;line-height:1.5;}
+  .bar-row{display:flex;align-items:center;gap:10px;margin:9px 0;font-size:13px;}
+  .bar-row .lbl{width:46px;color:#334155;font-weight:600;}
+  .bar-track{flex:1;background:#f1f5f9;border-radius:7px;height:16px;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:7px;}
+  .bar-row .val{width:84px;text-align:right;color:#475569;font-variant-numeric:tabular-nums;}
+  .foot{color:#94a3b8;font-size:11px;text-align:center;margin-top:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="title">Token<span>Governor</span></div>
+      <div class="sub">AI cost-governance gateway &middot; routes each request to the cheapest good-enough model</div>
+    </div>
+    <div class="pill" id="mode">&#9679; Controller: NORMAL</div>
+  </header>
+
+  <div class="cards">
+    <div class="card"><div class="k">Spend / Budget</div><div class="v" id="spend">$9.39</div>
+      <div class="d" id="budget">of $50.00 &middot; $40.61 left</div></div>
+    <div class="card"><div class="k">Avg quality</div><div class="v" id="quality">90.9%</div>
+      <div class="d">bar 70% &middot; passing</div></div>
+    <div class="card"><div class="k">Saved vs top-tier</div><div class="v pos" id="saved">47.2%</div>
+      <div class="d">router vs always-full</div></div>
+    <div class="card"><div class="k">Requests</div><div class="v" id="reqs">6,000</div>
+      <div class="d" id="lat">avg 142 ms</div></div>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <h3>Try the gateway</h3>
+      <p class="note">Type a prompt, pick who's asking, and send it. The router picks the model &mdash; you see the tier, quality, and cost it chose.</p>
+      <textarea id="prompt">What is Acme's return policy?</textarea>
+      <div class="row">
+        <select id="identity">
+          <option>support-team</option>
+          <option>data-science</option>
+          <option>noisy-bot</option>
+        </select>
+        <button onclick="send()">Route &amp; send &#8594;</button>
+      </div>
+      <div class="result" id="result">
+        <div class="chips">
+          <span class="chip tier" id="r-tier">model: gpt-4o-mini (nano)</span>
+          <span class="chip q" id="r-q">quality 0.91</span>
+          <span class="chip cost" id="r-cost">$0.000246</span>
+          <span class="chip lat" id="r-lat">38 ms</span>
+        </div>
+        <div class="answer" id="r-ans">Acme lets you return any product within 30 days of delivery for a full refund, as long as it's unused and in its original packaging.</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Routing mix</h3>
+      <p class="note">How often each tier was chosen.</p>
+      <div class="bar-row"><span class="lbl">nano</span>
+        <div class="bar-track"><div class="bar-fill" id="b-nano" style="width:61%;background:#22c55e;"></div></div>
+        <span class="val" id="v-nano">61%</span></div>
+      <div class="bar-row"><span class="lbl">mid</span>
+        <div class="bar-track"><div class="bar-fill" id="b-mid" style="width:26%;background:#3b82f6;"></div></div>
+        <span class="val" id="v-mid">26%</span></div>
+      <div class="bar-row"><span class="lbl">full</span>
+        <div class="bar-track"><div class="bar-fill" id="b-full" style="width:13%;background:#6366f1;"></div></div>
+        <span class="val" id="v-full">13%</span></div>
+    </div>
+  </div>
+
+  <div class="foot">TokenGovernor &middot; FastAPI &middot; Thompson-sampling router &middot; served live at / by the gateway</div>
+</div>
+
+<script>
+  // Refresh the metric cards from the live /stats endpoint (ignored if offline).
+  async function refreshStats(){
+    try{
+      const s = await (await fetch('/stats')).json();
+      document.getElementById('spend').textContent = '$' + Number(s.total_cost_usd).toFixed(2);
+      document.getElementById('budget').textContent =
+        'of $' + Number(s.budget_usd).toFixed(2) + ' · $' + Number(s.budget_remaining_usd).toFixed(2) + ' left';
+      document.getElementById('quality').textContent = (s.avg_quality*100).toFixed(1) + '%';
+      document.getElementById('reqs').textContent = Number(s.total_requests).toLocaleString();
+      document.getElementById('lat').textContent = 'avg ' + Math.round(s.avg_latency_ms) + ' ms';
+    }catch(e){/* offline preview: keep sample values */}
+  }
+  // Send a prompt through the gateway with model "auto" so the router chooses.
+  async function send(){
+    const body = {model:'auto', identity:document.getElementById('identity').value,
+      messages:[{role:'user', content:document.getElementById('prompt').value}]};
+    try{
+      const r = await (await fetch('/v1/chat/completions',{method:'POST',
+        headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)})).json();
+      const tier = r.model;
+      document.getElementById('r-tier').textContent = 'model: ' + r.model;
+      document.getElementById('r-q').textContent = 'quality ' + Number(r.quality).toFixed(2);
+      document.getElementById('r-cost').textContent = '$' + Number(r.cost_usd).toFixed(6);
+      document.getElementById('r-lat').textContent = Math.round(r.latency_ms) + ' ms';
+      document.getElementById('r-ans').textContent = r.content;
+      refreshStats();
+    }catch(e){ document.getElementById('r-ans').textContent =
+      'Could not reach the gateway. Start it with: uvicorn app.main:app --reload'; }
+  }
+  refreshStats();
+</script>
+</body>
+</html>
